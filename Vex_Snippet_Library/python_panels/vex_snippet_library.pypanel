@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<pythonPanelDocument>
+  <!-- This file contains definitions of Python interfaces and the
+ interfaces menu.  It should not be hand-edited when it is being
+ used by the application.  Note, that two definitions of the
+ same interface or of the interfaces menu are not allowed
+ in a single file. -->
+  <interface name="VexSnippetLibrary" label="Vex Snippet Library" icon="SOP_attribwrangle" showNetworkNavigationBar="false" help_url="">
+    <script><![CDATA[########################################################################
+# Replace the sample code below with your own to create a
+# PyQt5 or PySide2 interface.  Your code must define an
+# onCreateInterface() function that returns the root widget of
+# your interface.
+#
+# The 'hutil.Qt' is for internal-use only.
+# It is a wrapper module that enables the sample code below to work with
+# either a Qt4 or Qt5 environment for backwards-compatibility.
+#
+# When developing your own Python Panel, import directly from PySide2
+# or PyQt5 instead of from 'hutil.Qt'.
+########################################################################
+from importlib import reload
+from vex_snippet_library import vex_snippet_gui
+reload(vex_snippet_gui)
+
+def onCreateInterface():
+    widget = vex_snippet_gui.VexSnippetLibrary()
+    return widget
+]]></script>
+    <includeInToolbarMenu menu_position="104" create_separator="false"/>
+    <help><![CDATA[]]></help>
+  </interface>
+</pythonPanelDocument>

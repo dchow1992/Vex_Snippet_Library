@@ -1,0 +1,11 @@
+{
+    "enable" : true,
+    "env": [
+        {
+            "VEX_SNIPPET_LIBRARY": "path/to/root"
+        }
+    ],
+    "path": [
+        "$VEX_SNIPPET_LIBRARY"
+    ]
+}
