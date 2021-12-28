@@ -20,11 +20,11 @@
 # or PyQt5 instead of from 'hutil.Qt'.
 ########################################################################
 from importlib import reload
-from vex_snippet_library import vex_snippet_gui
-reload(vex_snippet_gui)
+from vex_snippet_library import main_panel
+reload(main_panel)
 
 def onCreateInterface():
-    widget = vex_snippet_gui.VexSnippetLibrary()
+    widget = main_panel.VexSnippetLibrary()
     return widget
 ]]></script>
     <includeInToolbarMenu menu_position="104" create_separator="false"/>
