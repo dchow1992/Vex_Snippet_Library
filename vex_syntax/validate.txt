@@ -1,0 +1,38 @@
+// this is a comment
+/*
+this is a multiline
+comment
+/*
+int i = 4;
+string foo = "hi";
+*/
+
+#include <test.h>
+#ifndef
+#define test
+#endif
+
+vector x = set(1,2,3);
+int y = 1;
+int np; vector nuv;
+float d = xyzdist(1, @P, np, nuv);
+string str = "this is a string";
+string str2 = 'this is a string';
+point
+point(
+bpoint(
+vectorx
+xpoint
+intersect
+
+while(1)
+if (
+foreach ( int x = 0; x < npoints(1); x++)
+{
+
+}
+
+/* fsdfsf
+test 2
+dlkfj
+ vfec */

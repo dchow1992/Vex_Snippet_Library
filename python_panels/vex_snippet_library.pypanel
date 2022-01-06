@@ -19,10 +19,14 @@
 # When developing your own Python Panel, import directly from PySide2
 # or PyQt5 instead of from 'hutil.Qt'.
 ########################################################################
-from importlib import reload
-from vex_snippet_library import main_panel
-reload(main_panel)
+import sys
 
+from vex_snippet_library import main_panel
+
+for module in list(sys.modules.values()):
+    if module and module.__name__.startswith('vex_snippet_library'):
+        del sys.modules[module.__name__]
+        
 def onCreateInterface():
     widget = main_panel.VexSnippetLibrary()
     return widget
