@@ -9,7 +9,7 @@ class VexSyntaxUtilities():
     def __init__(self):
         self.package = os.path.abspath(
             os.path.join(__file__, '..', '..', '..', '..'))
-        self.vex_dir = os.path.join(self.package, 'vex_syntax')
+        self.vex_dir = os.path.join(self.package, 'resources', 'vex_syntax')
         self.vex_data_types = ''
         self.vex_functions = ''
         self.vex_keywords = ''
@@ -67,7 +67,8 @@ class VexColors():
             'macros': QtGui.QTextCharFormat(),
             'comment': QtGui.QTextCharFormat(),
             'string_double': QtGui.QTextCharFormat(),
-            'string_single': QtGui.QTextCharFormat()
+            'string_single': QtGui.QTextCharFormat(),
+            'attributes': QtGui.QTextCharFormat()
             }
         for key, value in self.colors.items():
             value.setFontWeight(QtGui.QFont.Bold)
@@ -85,6 +86,9 @@ class VexColors():
             QtGui.QColor(237, 119, 237)))
 
         self.colors['macros'].setForeground(QtGui.QBrush(
+            QtGui.QColor(207, 162, 104)))
+
+        self.colors['attributes'].setForeground(QtGui.QBrush(
             QtGui.QColor(207, 162, 104)))
 
         self.colors['comment'].setForeground(QtGui.QBrush(
@@ -108,6 +112,7 @@ class VexHighlighter(QtGui.QSyntaxHighlighter):
             'functions': r'\b({})(?=\s|[(]|$)'.format(self.utils.vex_functions),
             'keywords': r'\b({})(?=\s|[(]|$)'.format(self.utils.vex_keywords),
             'macros': r'#[^\n]*',
+            'attributes': r'((?:^|[^\w])[A-Za-z0-9]?)\@\w+',
             'string_double': r'"[^"\\]*(\\.[^"\\]*)*"',
             'string_single': r"'[^'\\]*(\\.[^'\\]*)*'",
             'comment': r'\/\/[^\n]*'
@@ -119,6 +124,8 @@ class VexHighlighter(QtGui.QSyntaxHighlighter):
             expression = QtCore.QRegExp(self.patterns[pattern])
             index = expression.indexIn(text, 0)
             while index >= 0:
+                if pattern == 'attributes':
+                    print('attribute highlight routine')
                 index = expression.pos(0)
                 length = len(expression.cap(0))
                 self.setFormat(index, length, self.colors[pattern])

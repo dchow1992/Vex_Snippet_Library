@@ -1,3 +1,5 @@
+import os
+
 import re
 
 from PySide2 import QtWidgets, QtCore, QtGui
@@ -47,12 +49,17 @@ class VexEditor(QtWidgets.QPlainTextEdit):
         self.installEventFilter(self)
         self.highlighter = vex_highlighter.VexHighlighter(
             self.document())
+        root = os.path.abspath(os.path.join(__file__, '..', '..', '..', '..'))
+        fonts = os.path.join(root, 'resources', 'fonts')
+        QtGui.QFontDatabase.addApplicationFont(
+            os.path.join(fonts, 'SourceCodePro-Regular.ttf'))
 
-        editor_format = QtGui.QTextCharFormat()
-        editor_format.setFontLetterSpacing(110)
-        self.mergeCurrentCharFormat(editor_format)
+        font = QtGui.QFont('Source Code Pro')
+        self.setFont(font)
+        # editor_format = QtGui.QTextCharFormat()
+        # editor_format.setFontLetterSpacing(140)
+        # self.mergeCurrentCharFormat(editor_format)
         self.enable_editor()
-        # self.disable_editor()
 
     def eventFilter(self, widget, event):
         """Custom support for editor behavior"""

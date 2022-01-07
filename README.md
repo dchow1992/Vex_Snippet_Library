@@ -1,2 +1,2 @@
 # Vex Snippet Library
- Python Panel utility to help write vex in Houdini
+ Python Panel utility for creating, storing, and accessing vex snippets in Houdini.

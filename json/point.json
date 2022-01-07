@@ -1,5 +1,0 @@
-{
-    "context": "Points",
-    "data": "int np; vector nuv;\nfloat d = xyzdist(1, @P, np, nuv);\nint np; vector nuv;\nfloat d = xyzdist(1, @P, np, nuv);",
-    "label": "point"
-}

@@ -22,8 +22,8 @@ class ButtonDelegate(QtWidgets.QStyledItemDelegate):
         editor = QtWidgets.QPushButton(parent)
         editor.setToolTip('Copy Snippet')
         root = os.path.abspath(os.path.join(__file__, '..', '..', '..', '..'))
-        icon = QtGui.QIcon(
-            QtGui.QPixmap(os.path.join(root, 'icons', 'copy.png')))
+        icons = os.path.join(root, 'resources', 'icons')
+        icon = QtGui.QIcon(QtGui.QPixmap(os.path.join(icons, 'copy.png')))
         editor.setIcon(icon)
         editor.setIconSize(QtCore.QSize(18, 18))
         editor.setFixedSize(30, 30)
@@ -49,8 +49,6 @@ class SnippetModel(QtCore.QAbstractTableModel):
         # each element should be length 3 [[dict, x],]
         self.table_data = []
         self.n_columns = 2
-        self.icons = os.path.abspath(
-            os.path.join(__file__, '..', '..', '..', '..', 'icons'))
 
     def headerData(self, section, orientation, role):
         pass  # header will be turned off anyway
@@ -67,7 +65,7 @@ class SnippetModel(QtCore.QAbstractTableModel):
             return (QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable |
                     QtCore.Qt.ItemIsEditable)
         else:
-            return QtCore.Qt.ItemIsEnabled
+            return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable
 
     def data(self, index, role):
         if not index.isValid():
@@ -90,7 +88,10 @@ class SnippetModel(QtCore.QAbstractTableModel):
                     'Primitives': 'display_primitive_normals.svg',
                     'Vertices': 'filter_color_purple.svg'
                 }
-                path = os.path.join(self.icons, img[item['context']])
+                root = os.path.abspath(
+                    os.path.join(__file__, '..', '..', '..', '..'))
+                icons = os.path.join(root, 'resources', 'icons')
+                path = os.path.join(icons, img[item['context']])
                 pxmap = QtGui.QPixmap(path)
                 icon = QtGui.QIcon(pxmap)
                 return icon
@@ -158,6 +159,7 @@ class SnippetProxyModel(QtCore.QSortFilterProxyModel):
 class ButtonTable(QtWidgets.QTableView):
     def __init__(self):
         super(ButtonTable, self).__init__()
+        self.index = None
         self.model = SnippetModel()
         self.setModel(self.model)
 
@@ -178,25 +180,45 @@ class ButtonTable(QtWidgets.QTableView):
         btn_delegate.copyRequest.connect(self.btn_callback)
         self.setItemDelegateForColumn(1, btn_delegate)
         self.model.rowsInserted.connect(self.scrollToBottom)
+        self.selectionModel().selectionChanged.connect(self.stash_index)
 
         sel = QtWidgets.QAbstractItemView.SingleSelection
+        beh = QtWidgets.QAbstractItemView.SelectRows
         self.setSelectionMode(sel)
+        self.setSelectionBehavior(beh)
         self.setSortingEnabled(True)
         self.setShowGrid(False)
+
+    def mousePressEvent(self, event):
+        pt = QtCore.QPoint(1, event.pos().y())
+        if self.indexAt(pt).row() == -1:
+            self.selectionModel().clear()
+            self.index = None
+        else:
+            super(ButtonTable, self).mousePressEvent(event)
+
+    def stash_index(self):
+        if self.selectionModel().selectedIndexes():
+            self.index = self.selectionModel().selectedIndexes()[0]
 
     def add_item(self, item):
         # item expected to be a dictionary
         rows = self.model.rowCount()
         self.model.add_row([item, ''])
+        self.model.layoutChanged.emit()
 
     def remove_item(self):
         r = self.currentIndex().row()
-        self.model().remove_row(r)
+        self.model.remove_row(r)
 
     def btn_callback(self, index):
-        # mapped = self.filter.mapToSource(index)
-        mapped = index
-        model_index = self.model.index(mapped.row(), mapped.column())
+        model_index = self.model.index(index.row(), index.column())
         snippet = model_index.siblingAtColumn(1).data(role=QtCore.Qt.UserRole)
-        print(snippet['label'])
+        cb = QtWidgets.QApplication.clipboard()
+        cb.clear(mode=cb.Clipboard)
+        cb.setText(snippet['data'], mode=cb.Clipboard)
 
+        if self.index:
+            self.selectionModel().setCurrentIndex(
+                self.index, QtCore.QItemSelectionModel.Select)
+        print(snippet['label'])

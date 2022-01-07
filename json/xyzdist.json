@@ -1,0 +1,5 @@
+{
+    "label": "xyzdist",
+    "context": "Points",
+    "data": "int np; vector nuv;\nfloat d = xyzdist(1, @P, np, nuv);\n\nvector pos = primuv(1, \"P\", np, nuv);\nvector nml = normalize(primuv(1, \"N\", np, nuv));\n"
+}

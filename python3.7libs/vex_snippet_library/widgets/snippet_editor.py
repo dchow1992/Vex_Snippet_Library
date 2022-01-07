@@ -9,17 +9,17 @@ class SnippetEditor(QtWidgets.QWidget):
     def __init__(self, parent=None):
         super(SnippetEditor, self).__init__(parent)
         self.editable = False
-        self.icons = os.path.abspath(
-            os.path.join(__file__, '..', '..', '..', '..', 'icons'))
         self._init_ui()
 
     def _init_ui(self):
         self.layout = QtWidgets.QVBoxLayout(self)
+        root = os.path.abspath(os.path.join(__file__, '..', '..', '..', '..'))
+        icons = os.path.join(root, 'resources', 'icons')
 
         self.edit_btn = QtWidgets.QPushButton('')
         self.edit_btn.setToolTip('Allow Editing')
         icon = QtGui.QIcon(
-            QtGui.QPixmap(os.path.join(self.icons, 'edit.png')))
+            QtGui.QPixmap(os.path.join(icons, 'edit.png')))
         self.edit_btn.setIcon(icon)
         self.edit_btn.clicked.connect(self.edit_btn_callback)
         self.edit_btn.setStyleSheet(
@@ -35,14 +35,14 @@ class SnippetEditor(QtWidgets.QWidget):
         self.save_btn = QtWidgets.QPushButton('')
         self.save_btn.setToolTip('Save Changes')
         icon = QtGui.QIcon(
-            QtGui.QPixmap(os.path.join(self.icons, 'save.png')))
+            QtGui.QPixmap(os.path.join(icons, 'save.png')))
         self.save_btn.setIcon(icon)
         self.save_btn.clicked.connect(self.save_btn_callback)
 
         self.cancel_btn = QtWidgets.QPushButton('')
         self.cancel_btn.setToolTip('Discard Changes')
         icon = QtGui.QIcon(
-            QtGui.QPixmap(os.path.join(self.icons, 'cancel.png')))
+            QtGui.QPixmap(os.path.join(icons, 'cancel.png')))
         self.cancel_btn.setIcon(icon)
         self.cancel_btn.clicked.connect(self.cancel_btn_callback)
 
@@ -90,6 +90,7 @@ class SnippetEditor(QtWidgets.QWidget):
             self.combo.setEnabled(True)
             self.combo_lbl.setEnabled(True)
             self.edit_btn.setEnabled(False)
+            self.editor.setFocus()
 
     def save_btn_callback(self):
         self.editable = False
