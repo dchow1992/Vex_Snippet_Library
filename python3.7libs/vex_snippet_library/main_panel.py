@@ -8,15 +8,30 @@ import sys
 
 from PySide2 import QtWidgets, QtCore
 
-from widgets import snippet_editor
+from .widgets import snippet_editor
 
-from widgets import snippet_viewer
+from .widgets import snippet_viewer
 
-from widgets import button_table
+from .widgets import button_table
 
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
+logger.setLevel(logging.DEBUG)
 button_table.enable_logging()
+
+
+class Snippet(object):
+    def __init__(self, input_dict):
+        self.label = input_dict['label']
+        self.context = input_dict['context']
+        self.data = input_dict['data']
+        self.new_name = ''
+
+    def to_dict(self):
+        return {
+            'label': self.label,
+            'context': self.context,
+            'data': self.data
+        }
 
 
 class VexSnippetLibrary(QtWidgets.QWidget):
@@ -29,7 +44,8 @@ class VexSnippetLibrary(QtWidgets.QWidget):
         self.cached_index = None
         self.cached_label = ''
         self.new_label = ''
-        self.root = os.path.abspath(os.path.join(__file__, '..', '..', '..'))
+        self.root = os.path.abspath(
+            os.path.join(os.path.abspath(__file__), '..', '..', '..'))
         self.json_path = os.path.join(self.root, 'json')
         self._init_ui()
 
@@ -74,7 +90,7 @@ class VexSnippetLibrary(QtWidgets.QWidget):
         for file in snippets:
             with open(file, 'r') as f:
                 item_dict = json.load(f)
-                self.table.add_item(button_table.Snippet(item_dict))
+                self.table.add_item(Snippet(item_dict))
 
     def begin_new_snippet(self):
         self.table.blockSignals(True)
@@ -144,7 +160,7 @@ class VexSnippetLibrary(QtWidgets.QWidget):
             'context': snippet_context,
             'data': snippet_text
         }
-        return button_table.Snippet(new_dict)
+        return Snippet(new_dict)
 
     def write_snippet(self, snippet):
         logging.debug('Writing snippet: {}'.format(snippet.to_dict()))

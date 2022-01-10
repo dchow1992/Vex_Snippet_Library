@@ -14,21 +14,6 @@ def enable_logging():
     return
 
 
-class Snippet(object):
-    def __init__(self, input_dict):
-        self.label = input_dict['label']
-        self.context = input_dict['context']
-        self.data = input_dict['data']
-        self.new_name = ''
-
-    def to_dict(self):
-        return {
-            'label': self.label,
-            'context': self.context,
-            'data': self.data
-        }
-
-
 class ButtonDelegate(QtWidgets.QStyledItemDelegate):
     copyRequest = QtCore.Signal(QtCore.QModelIndex)
 
@@ -43,7 +28,8 @@ class ButtonDelegate(QtWidgets.QStyledItemDelegate):
     def createEditor(self, parent, option, index):
         editor = QtWidgets.QPushButton(parent)
         editor.setToolTip('Copy Snippet')
-        root = os.path.abspath(os.path.join(__file__, '..', '..', '..', '..'))
+        root = os.path.abspath(
+            os.path.join(os.path.abspath(__file__), '..', '..', '..', '..'))
         icons = os.path.join(root, 'resources', 'icons')
         icon = QtGui.QIcon(QtGui.QPixmap(os.path.join(icons, 'copy.png')))
         editor.setIcon(icon)

@@ -4,7 +4,7 @@ import json
 
 from PySide2 import QtWidgets, QtGui, QtCore
 
-from widgets import button_table
+from . import button_table
 
 
 class ClickableLabel(QtWidgets.QLabel):
