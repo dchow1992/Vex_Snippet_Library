@@ -1,5 +1,0 @@
-{
-    "label": "xyzdist",
-    "context": "Points",
-    "data": "int np; vector nuv;\nfloat d = xyzdist(1, @P, np, nuv, chf(\"maxdist\"));\nif(np != -1)\n{\n    vector pos = primuv(1, \"P\", np, nuv);\n    vector nml = primuv(1, \"N\", np, nuv); nml = normalize(nml);\n}\n"
-}
