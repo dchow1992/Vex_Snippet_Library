@@ -111,25 +111,23 @@ class VexHighlighter(QtGui.QSyntaxHighlighter):
             'data_types': r'\b({})\b(?=\s|$)'.format(self.utils.vex_data_types),
             'functions': r'\b({})(?=\s|[(]|$)'.format(self.utils.vex_functions),
             'keywords': r'\b({})(?=\s|[(]|$)'.format(self.utils.vex_keywords),
-            'macros': r'#[^\n]*',
-            'attributes': r'((?:^|[^\w])[A-Za-z0-9]?)\@\w+',
+            'attributes': r'((?<!\w)[A-Za-z0-9]?)\@\w+',
             'string_double': r'"[^"\\]*(\\.[^"\\]*)*"',
             'string_single': r"'[^'\\]*(\\.[^'\\]*)*'",
+            'macros': r'#[^\n]*',
             'comment': r'\/\/[^\n]*'
             }
 
     def highlightBlock(self, text):
         self.setFormat(0, len(text), self.colors['default'])
         for pattern, exp in self.patterns.items():
-            expression = QtCore.QRegExp(self.patterns[pattern])
-            index = expression.indexIn(text, 0)
-            while index >= 0:
-                if pattern == 'attributes':
-                    print('attribute highlight routine')
-                index = expression.pos(0)
-                length = len(expression.cap(0))
-                self.setFormat(index, length, self.colors[pattern])
-                index = expression.indexIn(text, index + length)
+            expression = QtCore.QRegularExpression(self.patterns[pattern])
+            index = expression.globalMatch(text, 0)
+            while index.hasNext():
+                match = index.next()
+                start = match.capturedStart()
+                end = match.capturedLength()
+                self.setFormat(start, end, self.colors[pattern])
 
         # multi-line comments
         self.setCurrentBlockState(0)

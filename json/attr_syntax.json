@@ -1,5 +1,0 @@
-{
-    "label": "attr_syntax",
-    "context": "Points",
-    "data": "point(1, \"P\", @ptnum);\npoint(1, \"P\",@ptnum);\nvector x = set(aa@Cd, v@Cd, 3@xform);\nint x[] = {@Cd, v@v};\nfloat y = [@v, s@test];\n @attribute=4;\n@x;\npoint(1, @P, np, nuv);\nvector @velocity = set(1,0,0);\n@Cd+=1;\n@P /= 2;\n@uv++; @uv--;\n@at*=2;\n@foo==1;\n@attr1;@attr2;\naa@\ns@Cd\naa@Cd\nv@v;\n"
-}

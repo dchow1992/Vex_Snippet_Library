@@ -1,5 +1,5 @@
 {
     "label": "pcopen",
     "context": "Points",
-    "data": "int input = 0;\nint maxpts = chi(\"maxpts\");\nfloat maxradius = chf(\"maxradius\");\nint pts[] = pcfind(input, \"P\", @P, maxradius, maxpts);\n\nforeach (int pt; pts)\n{\n   vector pos = point(input, \"P\", @ptnum);\n}\n"
+    "data": "\n"
 }

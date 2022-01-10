@@ -35,14 +35,12 @@ class SnippetViewer(QtWidgets.QWidget):
 
         self.add_btn = QtWidgets.QPushButton()
         self.add_btn.setToolTip('Add New Snippet')
-        icon = QtGui.QIcon(
-            QtGui.QPixmap(os.path.join(icons, 'add.svg')))
+        icon = QtGui.QIcon(os.path.join(icons, 'add.svg'))
         self.add_btn.setIcon(icon)
 
         self.del_btn = QtWidgets.QPushButton()
         self.del_btn.setToolTip('Delete Selected Snippet')
-        icon = QtGui.QIcon(
-            QtGui.QPixmap(os.path.join(icons, 'delete.svg')))
+        icon = QtGui.QIcon(os.path.join(icons, 'delete.svg'))
         self.del_btn.setIcon(icon)
 
         self.search_edit = QtWidgets.QLineEdit()

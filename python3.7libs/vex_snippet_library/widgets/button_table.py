@@ -4,7 +4,26 @@ import re
 
 import string
 
+import logging
+
 from PySide2 import QtCore, QtGui, QtWidgets
+
+logging.basicConfig(level=logging.DEBUG)
+
+
+class Snippet(object):
+    def __init__(self, input_dict):
+        self.label = input_dict['label']
+        self.context = input_dict['context']
+        self.data = input_dict['data']
+        self.new_name = ''
+
+    def to_dict(self):
+        return {
+            'label': self.label,
+            'context': self.context,
+            'data': self.data
+        }
 
 
 class ButtonDelegate(QtWidgets.QStyledItemDelegate):
@@ -46,12 +65,8 @@ class ButtonDelegate(QtWidgets.QStyledItemDelegate):
 class SnippetModel(QtCore.QAbstractTableModel):
     def __init__(self, parent=None):
         super(SnippetModel, self).__init__()
-        # each element should be length 3 [[dict, x],]
         self.table_data = []
         self.n_columns = 2
-
-    def headerData(self, section, orientation, role):
-        pass  # header will be turned off anyway
 
     def rowCount(self, parent=QtCore.QModelIndex()):
         return len(self.table_data)
@@ -70,16 +85,15 @@ class SnippetModel(QtCore.QAbstractTableModel):
     def data(self, index, role):
         if not index.isValid():
             return None
-        item = self.table_data[index.row()][0]
+        item = self.table_data[index.row()]
         if role == QtCore.Qt.DisplayRole:
-            # return None for icon / button column
-            if index.column() != 0:
+            if index.column() == 1:  # button column
                 return None
-            return item['label']
+            return item.label
         elif role == QtCore.Qt.UserRole:
             return item
         elif role == QtCore.Qt.EditRole:
-            return item['label']
+            return item.label
         elif role == QtCore.Qt.DecorationRole:
             if index.column() == 0:
                 img = {
@@ -91,45 +105,47 @@ class SnippetModel(QtCore.QAbstractTableModel):
                 root = os.path.abspath(
                     os.path.join(__file__, '..', '..', '..', '..'))
                 icons = os.path.join(root, 'resources', 'icons')
-                path = os.path.join(icons, img[item['context']])
+                path = os.path.join(icons, img[item.context])
                 pxmap = QtGui.QPixmap(path)
                 icon = QtGui.QIcon(pxmap)
                 return icon
 
     def setData(self, index, value, role=QtCore.Qt.EditRole):
         if index.isValid():
-            item = self.table_data[index.row()][index.column()]
+            item = self.table_data[index.row()]
             if role == QtCore.Qt.EditRole:
-                if item['label'] == value:
+                is_valid = re.match(r'^(?=.*[^\W_])[\w ]*$', value)
+                if not is_valid:
+                    return False
+                if item.label == value:
                     return True
-                item['label'] = self.build_unique_label(value)
-                self.table_data[index.row()][index.column()] = item
+                item.new_name = self.build_unique_label(value)
+                self.table_data[index.row()] = item
                 self.dataChanged.emit(index, index, [QtCore.Qt.DisplayRole])
                 return True
             elif role == QtCore.Qt.UserRole:
-                self.table_data[index.row()][index.column()] = value
+                self.table_data[index.row()] = value
                 return True
         else:
             return False
 
-    def remove_row(self, index, rows=1):
-        self.beginRemoveRows(QtCore.QModelIndex(), index, index + rows - 1)
-        self.table_data.pop(index)
+    def removeRows(self, pos, rows=1):
+        self.beginRemoveRows(QtCore.QModelIndex(), pos, pos + rows - 1)
+        self.table_data.pop(pos)
         self.endRemoveRows()
         return True
 
-    def add_row(self, data):
-        # for now we always add the item to the end
+    def insertRows(self, data):
         n = self.rowCount()
         self.beginInsertRows(QtCore.QModelIndex(), n, n)
-        data[0]['label'] = self.build_unique_label(data[0]['label'])
+        data.label = self.build_unique_label(data.label)
         self.table_data.append(data)
         self.endInsertRows()
 
     def build_unique_label(self, input_str):
         new_name = input_str.strip().replace(' ', '_')
         data = self.table_data
-        labels = [x[0]['label'] for x in data]
+        labels = [x.label for x in data]
         while(new_name in labels):
             head = new_name.rstrip(string.digits)
             tail = new_name.replace(head, '')
@@ -157,19 +173,10 @@ class SnippetProxyModel(QtCore.QSortFilterProxyModel):
 
 
 class ButtonTable(QtWidgets.QTableView):
-    def __init__(self):
-        super(ButtonTable, self).__init__()
-        self.index = None
+    def __init__(self, parent=None):
+        super(ButtonTable, self).__init__(parent)
         self.model = SnippetModel()
         self.setModel(self.model)
-
-        v_header = self.verticalHeader()
-        v_header.hide()
-        h_header = self.horizontalHeader()
-        h_header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
-        h_header.setSectionResizeMode(1, QtWidgets.QHeaderView.Fixed)
-        h_header.resizeSection(1, 36)
-        h_header.hide()
 
         self.filter = SnippetProxyModel(self)
         self.filter.setSourceModel(self.model)
@@ -180,10 +187,18 @@ class ButtonTable(QtWidgets.QTableView):
         btn_delegate.copyRequest.connect(self.btn_callback)
         self.setItemDelegateForColumn(1, btn_delegate)
         self.model.rowsInserted.connect(self.scrollToBottom)
-        self.selectionModel().selectionChanged.connect(self.stash_index)
 
-        sel = QtWidgets.QAbstractItemView.SingleSelection
-        beh = QtWidgets.QAbstractItemView.SelectRows
+        v_header = self.verticalHeader()
+        v_header.hide()
+        h_header = self.horizontalHeader()
+        h_header.setSectionResizeMode(0, QtWidgets.QHeaderView.Stretch)
+        h_header.setSectionResizeMode(1, QtWidgets.QHeaderView.Fixed)
+        h_header.resizeSection(1, 36)
+        h_header.hide()
+
+        sel = QtWidgets.QTableView.SingleSelection
+        beh = QtWidgets.QTableView.SelectRows
+
         self.setSelectionMode(sel)
         self.setSelectionBehavior(beh)
         self.setSortingEnabled(True)
@@ -191,34 +206,31 @@ class ButtonTable(QtWidgets.QTableView):
 
     def mousePressEvent(self, event):
         pt = QtCore.QPoint(1, event.pos().y())
-        if self.indexAt(pt).row() == -1:
+        if self.indexAt(pt).row() == -1:  # deselect on bg click
             self.selectionModel().clear()
-            self.index = None
+            self.parent().add_btn.setFocus()  # focus fix
         else:
-            super(ButtonTable, self).mousePressEvent(event)
+            index = self.indexAt(event.pos())
+            if index.column() == 0:  # snippet select
+                super(ButtonTable, self).mousePressEvent(event)
+            elif index.column() == 1:  # column behind button
+                self.parent().add_btn.setFocus()  # focus fix
 
-    def stash_index(self):
-        if self.selectionModel().selectedIndexes():
-            self.index = self.selectionModel().selectedIndexes()[0]
-
-    def add_item(self, item):
-        # item expected to be a dictionary
-        rows = self.model.rowCount()
-        self.model.add_row([item, ''])
-        self.model.layoutChanged.emit()
+    def add_item(self, snippet):
+        self.model.beginResetModel()
+        self.model.insertRows(snippet)
+        self.model.endResetModel()
 
     def remove_item(self):
-        r = self.currentIndex().row()
-        self.model.remove_row(r)
+        self.model.beginResetModel()
+        proxy_index = self.currentIndex()
+        model_index = self.filter.mapToSource(proxy_index)
+        r = model_index.row()
+        self.model.removeRows(r)
+        self.model.endResetModel()
 
     def btn_callback(self, index):
-        model_index = self.model.index(index.row(), index.column())
+        model_index = self.filter.mapToSource(index)
         snippet = model_index.siblingAtColumn(1).data(role=QtCore.Qt.UserRole)
-        cb = QtWidgets.QApplication.clipboard()
-        cb.clear(mode=cb.Clipboard)
-        cb.setText(snippet['data'], mode=cb.Clipboard)
-
-        if self.index:
-            self.selectionModel().setCurrentIndex(
-                self.index, QtCore.QItemSelectionModel.Select)
-        print(snippet['label'])
+        logging.debug('button callback: {}'.format(snippet.label))
+        self.parent().add_btn.setFocus()  # focus fix

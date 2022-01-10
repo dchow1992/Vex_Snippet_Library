@@ -34,15 +34,13 @@ class SnippetEditor(QtWidgets.QWidget):
 
         self.save_btn = QtWidgets.QPushButton('')
         self.save_btn.setToolTip('Save Changes')
-        icon = QtGui.QIcon(
-            QtGui.QPixmap(os.path.join(icons, 'save.png')))
+        icon = QtGui.QIcon(os.path.join(icons, 'save.png'))
         self.save_btn.setIcon(icon)
         self.save_btn.clicked.connect(self.save_btn_callback)
 
         self.cancel_btn = QtWidgets.QPushButton('')
         self.cancel_btn.setToolTip('Discard Changes')
-        icon = QtGui.QIcon(
-            QtGui.QPixmap(os.path.join(icons, 'cancel.png')))
+        icon = QtGui.QIcon(os.path.join(icons, 'cancel.png'))
         self.cancel_btn.setIcon(icon)
         self.cancel_btn.clicked.connect(self.cancel_btn_callback)
 

@@ -2,6 +2,9 @@
 __pycache__/
 *.py[cod]
 
+# Json snippets
+json/*.json
+
 # C extensions
 *.so
 
