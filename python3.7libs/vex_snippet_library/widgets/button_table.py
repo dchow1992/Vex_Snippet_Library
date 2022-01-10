@@ -232,5 +232,8 @@ class ButtonTable(QtWidgets.QTableView):
     def btn_callback(self, index):
         model_index = self.filter.mapToSource(index)
         snippet = model_index.siblingAtColumn(1).data(role=QtCore.Qt.UserRole)
-        logging.debug('button callback: {}'.format(snippet.label))
+
+        # todo: actual copying
+
+        logging.debug('Copied Snippet: {}'.format(snippet.label))
         self.parent().add_btn.setFocus()  # focus fix

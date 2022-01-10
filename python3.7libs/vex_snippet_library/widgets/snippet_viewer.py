@@ -6,7 +6,7 @@ import sys
 
 from PySide2 import QtWidgets, QtGui, QtCore
 
-from vex_snippet_library.widgets import button_table
+from widgets import button_table
 
 
 class ClickableLabel(QtWidgets.QLabel):

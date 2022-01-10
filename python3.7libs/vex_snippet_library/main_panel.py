@@ -1,25 +1,18 @@
 import os
 
-import sys
-
-import string
-
 import json
 
 import logging
 
 from PySide2 import QtWidgets, QtCore
 
-# tmp
+from widgets import snippet_editor
+
+from widgets import snippet_viewer
+
+from widgets import button_table
+
 logging.basicConfig(level=logging.DEBUG)
-sys.path.append('C:/Users/dchow/Documents/_GitHub/Vex_Snippet_Library/python3.7libs')
-# end tmp
-
-from vex_snippet_library.widgets import snippet_editor
-
-from vex_snippet_library.widgets import snippet_viewer
-
-from vex_snippet_library.widgets import button_table
 
 
 class VexSnippetLibrary(QtWidgets.QWidget):
@@ -157,7 +150,6 @@ class VexSnippetLibrary(QtWidgets.QWidget):
             json.dump(snippet.to_dict(), f, indent=4)
 
     def delete_snippet(self):
-        logging.debug('Delete Snippet Callback')
         sel = self.table.selectionModel().selectedIndexes()
         if sel:
             filter_idx = sel[0]
@@ -169,7 +161,6 @@ class VexSnippetLibrary(QtWidgets.QWidget):
                 self.table.remove_item()
 
     def update_selection(self):
-        logging.debug('Selection Update Callback')
         sel = self.table.selectionModel().selectedIndexes()
         if sel:
             self.snippet_editor.edit_btn.blockSignals(False)
@@ -180,18 +171,18 @@ class VexSnippetLibrary(QtWidgets.QWidget):
             combo_index = self.snippet_editor.combo.findText(
                 self.snippet.context)
             self.snippet_editor.combo.setCurrentIndex(combo_index)
-            logging.debug('Previous: {}'.format(self.cached_label))
-            logging.debug('Current: {}'.format(self.snippet.label))
+            logging.debug('New Selection: (From: {}, To: {})'.format(
+                self.cached_label, self.snippet.label))
         else:
+            logging.debug('Selection Cleared')
             self.cached_index = None
             self.snippet_editor.edit_btn.blockSignals(True)
             self.vex_editor.setPlainText('')
         self.snippet_viewer.add_btn.setFocus()  # table select hotfix
 
     def label_renamed(self, top_left, bottom_right):
-        logging.debug('Renamed Callback')
-        logging.debug('source: {}'.format(self.snippet.label))
-        logging.debug('dest: {}'.format(self.snippet.new_name))
+        logging.debug('Rename: (From: {}, To: {})'.format(
+            self.snippet.label, self.snippet.new_name))
 
         snippet = top_left.data(role=QtCore.Qt.UserRole)
         src = os.path.join(self.json_path, '{}.json'.format(snippet.label))
