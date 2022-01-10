@@ -8,7 +8,10 @@ import logging
 
 from PySide2 import QtCore, QtGui, QtWidgets
 
-logging.basicConfig(level=logging.DEBUG)
+
+def enable_logging():
+    logger = logging.getLogger(__name__)
+    return
 
 
 class Snippet(object):
@@ -187,6 +190,7 @@ class ButtonTable(QtWidgets.QTableView):
         btn_delegate.copyRequest.connect(self.btn_callback)
         self.setItemDelegateForColumn(1, btn_delegate)
         self.model.rowsInserted.connect(self.scrollToBottom)
+        self.filter.dynamicSortFilterChanged.connect(self.filter_changed)
 
         v_header = self.verticalHeader()
         v_header.hide()
@@ -216,6 +220,9 @@ class ButtonTable(QtWidgets.QTableView):
             elif index.column() == 1:  # column behind button
                 self.parent().add_btn.setFocus()  # focus fix
 
+    def filter_changed(self):
+        logging.debug('filter changed')
+
     def add_item(self, snippet):
         self.model.beginResetModel()
         self.model.insertRows(snippet)
@@ -233,7 +240,11 @@ class ButtonTable(QtWidgets.QTableView):
         model_index = self.filter.mapToSource(index)
         snippet = model_index.siblingAtColumn(1).data(role=QtCore.Qt.UserRole)
 
-        # todo: actual copying
-
+        logging.debug('Filter Index: {}'.format(index))
+        logging.debug('Model Index: {}'.format(model_index))
         logging.debug('Copied Snippet: {}'.format(snippet.label))
+
+        cb = QtWidgets.QApplication.clipboard()
+        cb.clear(mode=cb.Clipboard)
+        cb.setText(snippet.data, mode=cb.Clipboard)
         self.parent().add_btn.setFocus()  # focus fix

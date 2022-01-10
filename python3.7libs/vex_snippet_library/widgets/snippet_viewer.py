@@ -2,8 +2,6 @@ import os
 
 import json
 
-import sys
-
 from PySide2 import QtWidgets, QtGui, QtCore
 
 from widgets import button_table
@@ -83,10 +81,12 @@ class SnippetViewer(QtWidgets.QWidget):
         self.layout.addWidget(self.table)
 
     def filter_snippets(self):
+        self.table.model.beginResetModel()
         self.table.filter.setFilterRegExp(QtCore.QRegExp(
             self.search_edit.text(),
             QtCore.Qt.CaseInsensitive,
             QtCore.QRegExp.FixedString))
+        self.table.model.endResetModel()
 
     def setEnabled(self, mode=True):
         self.add_btn.setEnabled(mode)
@@ -96,9 +96,3 @@ class SnippetViewer(QtWidgets.QWidget):
 
     def clear_btn_callback(self):
         self.search_edit.setText('')
-
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    w = SnippetViewer()
-    w.show()
-    sys.exit(app.exec_())

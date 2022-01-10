@@ -4,6 +4,8 @@ import json
 
 import logging
 
+import sys
+
 from PySide2 import QtWidgets, QtCore
 
 from widgets import snippet_editor
@@ -12,7 +14,9 @@ from widgets import snippet_viewer
 
 from widgets import button_table
 
-logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+button_table.enable_logging()
 
 
 class VexSnippetLibrary(QtWidgets.QWidget):
