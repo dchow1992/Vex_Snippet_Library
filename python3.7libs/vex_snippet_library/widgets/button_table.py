@@ -174,7 +174,6 @@ class ButtonTable(QtWidgets.QTableView):
         btn_delegate.copyRequest.connect(self.btn_callback)
         self.setItemDelegateForColumn(1, btn_delegate)
         self.model.rowsInserted.connect(self.scrollToBottom)
-        self.filter.dynamicSortFilterChanged.connect(self.filter_changed)
 
         v_header = self.verticalHeader()
         v_header.hide()
@@ -203,9 +202,6 @@ class ButtonTable(QtWidgets.QTableView):
                 super(ButtonTable, self).mousePressEvent(event)
             elif index.column() == 1:  # column behind button
                 self.parent().add_btn.setFocus()  # focus fix
-
-    def filter_changed(self):
-        logging.debug('filter changed')
 
     def add_item(self, snippet):
         self.model.beginResetModel()
