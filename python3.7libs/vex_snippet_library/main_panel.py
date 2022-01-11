@@ -15,8 +15,7 @@ from .widgets import snippet_viewer
 from .widgets import button_table
 
 logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
-button_table.enable_logging()
+logger.setLevel(logging.INFO)
 
 
 class Snippet(object):
@@ -76,7 +75,7 @@ class VexSnippetLibrary(QtWidgets.QWidget):
         self.load_snippets()
 
         # initial selection
-        idx = self.table.model.index(0, 0)
+        idx = self.table.filter.index(0, 0)
         self.snippet = idx.data(role=QtCore.Qt.UserRole)
         self.table.setCurrentIndex(idx)
 
@@ -116,9 +115,12 @@ class VexSnippetLibrary(QtWidgets.QWidget):
         self.snippet_viewer.setEnabled(True)
 
         if self._editing:
-            snippet = self.model.data(self.cached_index, QtCore.Qt.UserRole)
+            filter_idx = self.table.currentIndex()
+            model_idx = self.table.filter.mapToSource(filter_idx)
+            snippet = self.model.data(model_idx, QtCore.Qt.UserRole)
+            snippet.context = self.snippet_editor.combo.currentText()
             snippet.data = self.vex_editor.toPlainText().strip() + '\n'
-            self.model.setData(self.cached_index, snippet, QtCore.Qt.UserRole)
+            self.model.setData(model_idx, snippet, QtCore.Qt.UserRole)
             self.vex_editor.setPlainText(snippet.data)
         if self._creating:
             self.table.add_item(new_snippet)
@@ -179,9 +181,13 @@ class VexSnippetLibrary(QtWidgets.QWidget):
             if os.path.isfile(to_del):
                 os.remove(to_del)
                 self.table.remove_item()
+                logging.debug('removed item')
+                self.table.selectionModel().clear()
+                self.update_selection()
 
     def update_selection(self):
         sel = self.table.selectionModel().selectedIndexes()
+        logging.debug(sel)
         if sel:
             self.snippet_editor.edit_btn.blockSignals(False)
             self.cached_index = sel[0]
@@ -200,7 +206,9 @@ class VexSnippetLibrary(QtWidgets.QWidget):
             self.vex_editor.setPlainText('')
         self.snippet_viewer.add_btn.setFocus()  # table select hotfix
 
-    def label_renamed(self, top_left, bottom_right):
+    def label_renamed(self, top_left, bottom_right, roles):
+        if QtCore.Qt.EditRole not in roles:
+            return
         logging.debug('Rename: (From: {}, To: {})'.format(
             self.snippet.label, self.snippet.new_name))
 

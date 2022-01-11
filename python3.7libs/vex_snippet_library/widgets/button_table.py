@@ -8,10 +8,7 @@ import logging
 
 from PySide2 import QtCore, QtGui, QtWidgets
 
-
-def enable_logging():
-    logger = logging.getLogger(__name__)
-    return
+logger = logging.getLogger(__name__)
 
 
 class ButtonDelegate(QtWidgets.QStyledItemDelegate):
@@ -110,10 +107,11 @@ class SnippetModel(QtCore.QAbstractTableModel):
                     return True
                 item.new_name = self.build_unique_label(value)
                 self.table_data[index.row()] = item
-                self.dataChanged.emit(index, index, [QtCore.Qt.DisplayRole])
+                self.dataChanged.emit(index, index, [QtCore.Qt.EditRole])
                 return True
             elif role == QtCore.Qt.UserRole:
                 self.table_data[index.row()] = value
+                # self.dataChanged.emit(index, index, [QtCore.Qt.DecorationRole])
                 return True
         else:
             return False
