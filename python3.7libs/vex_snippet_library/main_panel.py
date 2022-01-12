@@ -60,6 +60,7 @@ class VexSnippetLibrary(QtWidgets.QWidget):
         self.splitter = QtWidgets.QSplitter(QtCore.Qt.Horizontal)
         self.splitter.addWidget(self.snippet_viewer)
         self.splitter.addWidget(self.snippet_editor)
+        self.splitter.setSizes([200, 200])
         self.splitter.setStretchFactor(1, 3)
 
         self.snippet_viewer.add_btn.clicked.connect(self.begin_new_snippet)
