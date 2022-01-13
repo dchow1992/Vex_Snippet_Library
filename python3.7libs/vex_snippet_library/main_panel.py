@@ -75,7 +75,7 @@ class VexSnippetLibrary(QtWidgets.QWidget):
         self.layout.addWidget(self.splitter)
 
         if not os.path.isdir(self.json_path):
-            os.mkdirs(self.json_path)
+            os.makedirs(self.json_path)
 
         self.load_snippets()
 
