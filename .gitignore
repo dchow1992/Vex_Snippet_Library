@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 
 # Json snippets
-json/*.json
+*.json
 
 # C extensions
 *.so
