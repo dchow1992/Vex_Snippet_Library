@@ -30,8 +30,11 @@ class ButtonDelegate(QtWidgets.QStyledItemDelegate):
         icons = os.path.join(root, 'resources', 'icons')
         icon = QtGui.QIcon(QtGui.QPixmap(os.path.join(icons, 'copy.png')))
         editor.setIcon(icon)
-        editor.setIconSize(QtCore.QSize(18, 18))
-        editor.setFixedSize(30, 30)
+
+        table = self.parent()
+        row_height = table.verticalHeader().length()
+        editor.setIconSize(QtCore.QSize(row_height/4, row_height/4))
+        editor.setFixedSize(row_height/2.2, row_height/2.2)
         editor.clicked.connect(lambda: self.copyRequest.emit(index))
         return editor
 
@@ -78,7 +81,7 @@ class SnippetModel(QtCore.QAbstractTableModel):
             return item.label
         elif role == QtCore.Qt.UserRole:
             return item
-        elif role == QtCore.Qt.EditRole:
+        elif role == QtCore.Qt.EditRole or role == QtCore.Qt.ToolTipRole:
             return item.label
         elif role == QtCore.Qt.DecorationRole:
             if index.column() == 0:
