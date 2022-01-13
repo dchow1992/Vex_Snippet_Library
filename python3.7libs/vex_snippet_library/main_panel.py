@@ -74,6 +74,7 @@ class VexSnippetLibrary(QtWidgets.QWidget):
 
         self.layout.addWidget(self.splitter)
 
+        self.snippet_editor.edit_btn.blockSignals(True)
         if not os.path.isdir(self.json_path):
             os.makedirs(self.json_path)
 

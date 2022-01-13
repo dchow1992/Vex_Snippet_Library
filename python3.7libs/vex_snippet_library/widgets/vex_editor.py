@@ -175,10 +175,11 @@ class VexEditor(QtWidgets.QPlainTextEdit):
 
     def _line_num_area_width(self):
         digits = 1
-        count = max(1, self.blockCount())
-        while count >= 10:
-            count /= 10
-            digits += 1
+        # count = max(1, self.blockCount())
+        # while count >= 10:
+        #     count /= 10
+        #     digits += 1
+        digits = 2
         space = 18 + self.fontMetrics().width('9') * digits
         return space
 
