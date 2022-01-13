@@ -32,9 +32,9 @@ class ButtonDelegate(QtWidgets.QStyledItemDelegate):
         editor.setIcon(icon)
 
         table = self.parent()
-        row_height = table.verticalHeader().length()
-        editor.setIconSize(QtCore.QSize(row_height/4, row_height/4))
-        editor.setFixedSize(row_height/2.2, row_height/2.2)
+        row_height = table.verticalHeader().defaultSectionSize()
+        editor.setIconSize(QtCore.QSize(row_height/1.7, row_height/1.7))
+        editor.setFixedSize(row_height/1.1, row_height/1.1)
         editor.clicked.connect(lambda: self.copyRequest.emit(index))
         return editor
 
