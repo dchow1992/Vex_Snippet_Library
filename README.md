@@ -2,6 +2,7 @@
 ## Python Panel utility for creating, storing, and accessing vex snippets in Houdini.
 
 https://vimeo.com/665899325
+
 ![Image of the Panel](/resources/readme.jpg?raw=true)
 
 ## Installation
