@@ -44,7 +44,6 @@ class VexEditor(QtWidgets.QPlainTextEdit):
         self._init_ui()
 
     def _init_ui(self):
-        """Create and initialize widgets"""
         self.setLineWrapMode(QtWidgets.QPlainTextEdit.NoWrap)
         self.installEventFilter(self)
         self.highlighter = vex_highlighter.VexHighlighter(
@@ -55,10 +54,8 @@ class VexEditor(QtWidgets.QPlainTextEdit):
             os.path.join(fonts, 'SourceCodePro-Regular.ttf'))
 
         font = QtGui.QFont('Source Code Pro')
+        font.setPointSize(7)
         self.setFont(font)
-        # editor_format = QtGui.QTextCharFormat()
-        # editor_format.setFontLetterSpacing(140)
-        # self.mergeCurrentCharFormat(editor_format)
         self.enable_editor()
 
     def eventFilter(self, widget, event):
