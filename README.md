@@ -4,7 +4,7 @@
 ![Image of the Panel](/resources/readme.jpg?raw=true)
 
 ## Installation
-* Copy vex_snippet_library.json in $HOUDINI_USER_PREF_DIR/packages
+* Copy vex_snippet_library.json to $HOUDINI_USER_PREF_DIR/packages
 * Inside the package file, change "path/to/root" to the root folder of vex_snippet_library
 ```
 e.g. "VEX_SNIPPET_LIBRARY": "C:\Users\myuser\Documents\houdini_markingmenu"
