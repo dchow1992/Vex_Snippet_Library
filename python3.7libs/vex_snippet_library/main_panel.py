@@ -61,7 +61,7 @@ class VexSnippetLibrary(QtWidgets.QWidget):
         self.splitter.addWidget(self.snippet_viewer)
         self.splitter.addWidget(self.snippet_editor)
         self.splitter.setSizes([200, 200])
-        self.splitter.setStretchFactor(1, 3)
+        self.splitter.setStretchFactor(1, 2.5)
 
         self.snippet_viewer.add_btn.clicked.connect(self.begin_new_snippet)
         self.snippet_viewer.del_btn.clicked.connect(self.delete_snippet)
@@ -145,17 +145,19 @@ class VexSnippetLibrary(QtWidgets.QWidget):
             if self.table.selectionModel().hasSelection():
                 self._editing = True
                 self.snippet_viewer.setEnabled(False)
+                self.update_selection()
         else:
             self.snippet_viewer.setEnabled(False)
 
     def discard_snippet(self):
+        self.vex_editor.setPlainText('')
         if self._creating:
             self.table.blockSignals(False)
         self.snippet_viewer.setEnabled(True)
+        if self.cached_index:
+            self.vex_editor.setPlainText(self.snippet.data)
         self._creating = False
         self._editing = False
-        if self.cached_index:
-            self.table.setCurrentIndex(self.cached_index)
 
     def build_new_snippet(self):
         snippet_context = self.snippet_editor.combo.currentText()
