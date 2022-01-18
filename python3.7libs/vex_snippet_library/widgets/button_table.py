@@ -8,7 +8,7 @@ import logging
 
 from PySide2 import QtCore, QtGui, QtWidgets
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('vex_snippet_library.main_panel.button_table')
 
 
 class ButtonDelegate(QtWidgets.QStyledItemDelegate):
@@ -223,9 +223,9 @@ class ButtonTable(QtWidgets.QTableView):
         model_index = self.filter.mapToSource(index)
         snippet = model_index.siblingAtColumn(1).data(role=QtCore.Qt.UserRole)
 
-        logging.debug('Filter Index: {}'.format(index))
-        logging.debug('Model Index: {}'.format(model_index))
-        logging.debug('Copied Snippet: {}'.format(snippet.label))
+        logger.debug('Filter Index: {}'.format(index))
+        logger.debug('Model Index: {}'.format(model_index))
+        logger.debug('Copied Snippet: {}'.format(snippet.label))
 
         cb = QtWidgets.QApplication.clipboard()
         cb.clear(mode=cb.Clipboard)

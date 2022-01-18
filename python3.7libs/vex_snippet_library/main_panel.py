@@ -14,7 +14,7 @@ from .widgets import snippet_viewer
 
 from .widgets import button_table
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
@@ -49,6 +49,7 @@ class VexSnippetLibrary(QtWidgets.QWidget):
         self._init_ui()
 
     def _init_ui(self):
+        logger.debug('initializing panel..')
         self.layout = QtWidgets.QHBoxLayout(self)
 
         self.snippet_viewer = snippet_viewer.SnippetViewer(self)
@@ -173,7 +174,7 @@ class VexSnippetLibrary(QtWidgets.QWidget):
         return Snippet(new_dict)
 
     def write_snippet(self, snippet):
-        logging.debug('Writing snippet: {}'.format(snippet.to_dict()))
+        logger.debug('Writing snippet: {}'.format(snippet.to_dict()))
         new_json = os.path.join(
             self.json_path, '{}.json'.format(snippet.label))
         with open(new_json, 'w+') as f:
@@ -189,13 +190,13 @@ class VexSnippetLibrary(QtWidgets.QWidget):
             if os.path.isfile(to_del):
                 os.remove(to_del)
                 self.table.remove_item()
-                logging.debug('removed item')
+                logger.debug('removed item')
                 self.table.selectionModel().clear()
                 self.update_selection()
 
     def update_selection(self):
         sel = self.table.selectionModel().selectedIndexes()
-        logging.debug(sel)
+        logger.debug(sel)
         if sel:
             self.snippet_editor.edit_btn.blockSignals(False)
             self.cached_index = sel[0]
@@ -205,10 +206,10 @@ class VexSnippetLibrary(QtWidgets.QWidget):
             combo_index = self.snippet_editor.combo.findText(
                 self.snippet.context)
             self.snippet_editor.combo.setCurrentIndex(combo_index)
-            logging.debug('New Selection: (From: {}, To: {})'.format(
+            logger.debug('New Selection: (From: {}, To: {})'.format(
                 self.cached_label, self.snippet.label))
         else:
-            logging.debug('Selection Cleared')
+            logger.debug('Selection Cleared')
             self.cached_index = None
             self.snippet_editor.edit_btn.blockSignals(True)
             self.vex_editor.setPlainText('')
@@ -217,7 +218,7 @@ class VexSnippetLibrary(QtWidgets.QWidget):
     def label_renamed(self, top_left, bottom_right, roles):
         if QtCore.Qt.EditRole not in roles:
             return
-        logging.debug('Rename: (From: {}, To: {})'.format(
+        logger.debug('Rename: (From: {}, To: {})'.format(
             self.snippet.label, self.snippet.new_name))
 
         snippet = top_left.data(role=QtCore.Qt.UserRole)
