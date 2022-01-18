@@ -8,7 +8,7 @@ import logging
 
 from PySide2 import QtCore, QtGui, QtWidgets
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('vex_snippet_library.main_panel.button_table')
 
 
 class ButtonDelegate(QtWidgets.QStyledItemDelegate):

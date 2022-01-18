@@ -14,7 +14,7 @@ from .widgets import snippet_viewer
 
 from .widgets import button_table
 
-logger = logging.getLogger()
+logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 
@@ -49,6 +49,7 @@ class VexSnippetLibrary(QtWidgets.QWidget):
         self._init_ui()
 
     def _init_ui(self):
+        logger.debug('initializing panel..')
         self.layout = QtWidgets.QHBoxLayout(self)
 
         self.snippet_viewer = snippet_viewer.SnippetViewer(self)
