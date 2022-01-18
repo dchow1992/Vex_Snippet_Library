@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Add Vex Snippet Library to the Misc section of the pane tab type menu -->
-<menu>
-  <subMenu id="panetype_misc">
-    <actionItem id="pythonpanel::VexSnippetLibrary">
-      <label>Vex Snippet Library</label>
-    </actionItem>
-  </subMenu>
-</menu>
+<menuDocument>
+    <menu>
+        <subMenu id="panetype_misc">
+            <actionItem id="pythonpanel::VexSnippetLibrary">
+                <label>Vex Snippet Library</label>
+            </actionItem>
+        </subMenu>
+    </menu>
+</menuDocument>
