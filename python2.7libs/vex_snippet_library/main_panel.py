@@ -6,7 +6,7 @@ import logging
 
 import sys
 
-import configparser
+from ConfigParser import ConfigParser
 
 from PySide2 import QtWidgets, QtCore, QtGui
 
@@ -29,7 +29,7 @@ class Options(object):
             self.build_default_options()
 
     def build_default_options(self):
-        config = configparser.ConfigParser()
+        config = ConfigParser()
         config.add_section('GENERAL')
 
         editor_font_default = 7
@@ -43,7 +43,7 @@ class Options(object):
             config.write(f)
 
     def read(self):
-        config = configparser.ConfigParser()
+        config = ConfigParser()
         config.read(self.config)
         return {
             'editor_font_size': config.getfloat('GENERAL', 'editor_font_size')

@@ -15,7 +15,7 @@ class ButtonDelegate(QtWidgets.QStyledItemDelegate):
     copyRequest = QtCore.Signal(QtCore.QModelIndex)
 
     def __init__(self, parent):
-        super().__init__(parent)
+        super(ButtonDelegate, self).__init__(parent)
 
     def paint(self, painter, option, index):
         if isinstance(self.parent(), QtWidgets.QAbstractItemView):
