@@ -2,9 +2,13 @@ import os
 
 import re
 
+import logging
+
 from PySide2 import QtWidgets, QtCore, QtGui
 
 from . import vex_highlighter
+
+logger = logging.getLogger('vex_snippet_library.main_panel.vex_editor')
 
 
 class LineNumberArea(QtWidgets.QWidget):
@@ -73,11 +77,11 @@ class VexEditor(QtWidgets.QPlainTextEdit):
                         get_block = doc.findBlockByLineNumber(line)
                         cursor = QtGui.QTextCursor(get_block)
                         self.setTextCursor(cursor)
-                        self.insertPlainText('   ')
+                        self.insertPlainText('    ')
                     cursor.endEditBlock()
                     self._select_lines(lines)
                 else:
-                    self.insertPlainText('   ')
+                    self.insertPlainText('    ')
                 return True
 
             # shift tab
@@ -115,7 +119,7 @@ class VexEditor(QtWidgets.QPlainTextEdit):
                 out = '\n'
                 if leading_whitespace:
                     for i in range(indent_level):
-                        out += '   '
+                        out += '    '
                 cursor.insertText(out)
                 return True
 
