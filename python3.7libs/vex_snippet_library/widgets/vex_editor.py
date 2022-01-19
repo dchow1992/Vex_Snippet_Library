@@ -58,7 +58,6 @@ class VexEditor(QtWidgets.QPlainTextEdit):
             os.path.join(fonts, 'SourceCodePro-Regular.ttf'))
 
         font = QtGui.QFont('Source Code Pro')
-        font.setPointSize(7)
         self.setFont(font)
         self.enable_editor()
 
