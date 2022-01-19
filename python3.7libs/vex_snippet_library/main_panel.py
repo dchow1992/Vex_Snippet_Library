@@ -6,7 +6,9 @@ import logging
 
 import sys
 
-from PySide2 import QtWidgets, QtCore
+import configparser
+
+from PySide2 import QtWidgets, QtCore, QtGui
 
 from .widgets import snippet_editor
 
@@ -16,6 +18,36 @@ from .widgets import button_table
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+
+
+class Options(object):
+    def __init__(self, root_dir):
+        self.package = root_dir
+        self.config = os.path.join(self.package, 'options.ini')
+
+        if not os.path.isfile(self.config):
+            self.build_default_options()
+
+    def build_default_options(self):
+        config = configparser.ConfigParser()
+        config.add_section('GENERAL')
+
+        editor_font_default = 7
+        if sys.platform == "linux" or sys.platform == "linux2":
+            editor_font_default = 9
+
+        config.set(
+            'GENERAL', 'editor_font_size', '{}'.format(editor_font_default))
+
+        with open(self.config, 'w+') as f:
+            config.write(f)
+
+    def read(self):
+        config = configparser.ConfigParser()
+        config.read(self.config)
+        return {
+            'editor_font_size': config.getfloat('GENERAL', 'editor_font_size')
+        }
 
 
 class Snippet(object):
@@ -46,6 +78,7 @@ class VexSnippetLibrary(QtWidgets.QWidget):
         self.root = os.path.abspath(
             os.path.join(os.path.abspath(__file__), '..', '..', '..'))
         self.json_path = os.path.join(self.root, 'json')
+        self.options = Options(self.root).read()
         self._init_ui()
 
     def _init_ui(self):
@@ -55,6 +88,8 @@ class VexSnippetLibrary(QtWidgets.QWidget):
         self.snippet_viewer = snippet_viewer.SnippetViewer(self)
         self.snippet_editor = snippet_editor.SnippetEditor(self)
         self.vex_editor = self.snippet_editor.editor
+        self.vex_editor.setFont(
+            QtGui.QFont('Source Code Pro', self.options['editor_font_size']))
         self.table = self.snippet_viewer.table
         self.model = self.table.model
 
